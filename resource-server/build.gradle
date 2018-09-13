@@ -1,0 +1,33 @@
+buildscript {
+    repositories {
+        maven { url "https://repo.spring.io/plugins-release" }
+    }
+    dependencies {
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.15.RELEASE'
+    }
+}
+
+group = 'org.springframework.security.oauth.samples'
+version = '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.springframework.boot:spring-boot-starter-web',
+            'org.springframework.boot:spring-boot-starter-security',
+            'org.springframework.security.oauth:spring-security-oauth2:2.3.3.RELEASE',
+            'org.springframework.security:spring-security-jwt:1.0.9.RELEASE'
+
+    testCompile 'org.springframework.boot:spring-boot-starter-test',
+            'org.springframework.security:spring-security-test',
+            'junit:junit:4.12'
+}

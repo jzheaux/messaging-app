@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+	<title>Spring Security - Messages</title>
+	<meta charset="utf-8" />
+</head>
+<body>
+<div th:substituteby="index::logout"></div>
+<h1>Messages</h1>
+<div>
+	<span style="font-weight:bold">User Messages:</span>
+	<ul>
+		<li th:each="message : ${messages}">
+			<span th:text="${message}"></span>
+		</li>
+	</ul>
+</div>
+</body>
+</html>

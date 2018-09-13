@@ -1,0 +1,5 @@
+rootProject.name = 'springone2018-demo'
+
+include 'client-app'
+include 'resource-server'
+include 'uaa-server'
