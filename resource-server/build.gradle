@@ -1,13 +1,13 @@
 buildscript {
     repositories {
-        maven { url "https://repo.spring.io/plugins-release" }
+        maven { url 'https://repo.spring.io/libs-milestone' }
     }
     dependencies {
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:1.5.15.RELEASE'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.1.0.M3'
     }
 }
 
-group = 'org.springframework.security.oauth.samples'
+group = 'org.springframework.security.samples'
 version = '1.0-SNAPSHOT'
 
 apply plugin: 'java'
@@ -17,17 +17,18 @@ apply plugin: 'io.spring.dependency-management'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+ext['spring-security.version'] = '5.1.0.RC2'
+
 repositories {
+    maven { url "https://repo.spring.io/libs-milestone" }
     mavenCentral()
 }
 
 dependencies {
-    compile 'org.springframework.boot:spring-boot-starter-web',
-            'org.springframework.boot:spring-boot-starter-security',
-            'org.springframework.security.oauth:spring-security-oauth2:2.3.3.RELEASE',
-            'org.springframework.security:spring-security-jwt:1.0.9.RELEASE'
-
-    testCompile 'org.springframework.boot:spring-boot-starter-test',
-            'org.springframework.security:spring-security-test',
-            'junit:junit:4.12'
+    compile "org.springframework.boot:spring-boot-starter-web",
+            "org.springframework.boot:spring-boot-starter-data-jpa",
+            "org.springframework.boot:spring-boot-starter-security",
+            "org.springframework.security:spring-security-data",
+            "org.springframework.security:spring-security-oauth2-resource-server",
+            "com.h2database:h2"
 }

@@ -13,25 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sample.config;
+package sample.data;
 
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 
 /**
  * @author Joe Grandja
  */
-@EnableWebSecurity
-public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
+public interface MessageRepository extends CrudRepository<Message, Long> {
 
-	// @formatter:off
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-			.authorizeRequests()
-				.mvcMatchers("/messages/**").access("hasAuthority('SCOPE_messages')")
-				.anyRequest().authenticated();
-	}
-	// @formatter:on
+	@Query("select m from Message m where m.toId = ?#{principal.id}")
+	Iterable<Message> getInbox();
+
+	@Query("select m from Message m where m.fromId = ?#{principal.id}")
+	Iterable<Message> getSent();
 }

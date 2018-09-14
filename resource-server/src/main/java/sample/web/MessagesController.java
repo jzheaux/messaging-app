@@ -15,9 +15,17 @@
  */
 package sample.web;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import sample.data.Message;
+import sample.data.MessageRepository;
+
+import javax.validation.Valid;
 
 /**
  * @author Joe Grandja
@@ -25,11 +33,35 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/messages")
 public class MessagesController {
+	private final MessageRepository messageRepository;
 
-	@RequestMapping(method = RequestMethod.GET)
-	public String[] getMessages() {
-		String[] messages = new String[] {"Message 1", "Message 2", "Message 3"};
+	public MessagesController(MessageRepository messageRepository) {
+		this.messageRepository = messageRepository;
+	}
 
-		return messages;
+	@GetMapping("/inbox")
+	public Iterable<Message> inbox() {
+		return this.messageRepository.getInbox();
+	}
+
+	@GetMapping("/sent")
+	public Iterable<Message> sent() {
+		return this.messageRepository.getSent();
+	}
+
+	@GetMapping("/{id}")
+	public Message get(@PathVariable Long id) {
+		return this.messageRepository.findById(id).orElse(null);
+	}
+
+	@PostMapping
+	public Message save(@Valid @RequestBody Message message) {
+		return this.messageRepository.save(message);
+	}
+
+	@DeleteMapping("/{id}")
+	public void delete(@PathVariable Long id) {
+		this.messageRepository.deleteById(id);
+		return;
 	}
 }

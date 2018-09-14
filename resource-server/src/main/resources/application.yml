@@ -9,9 +9,13 @@ logging:
     org.springframework.security.oauth2: INFO
 #    org.springframework.boot.autoconfigure: DEBUG
 
-security:
-  oauth2:
-    resource:
-      filter-order: 3
-      jwk:
-        key-set-uri: http://localhost:8090/uaa/token_keys
+spring:
+  jackson:
+    date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
+  datasource:
+    data: classpath:data.sql
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8090/uaa/token_keys
