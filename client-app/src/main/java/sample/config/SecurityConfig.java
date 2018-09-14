@@ -15,9 +15,17 @@
  */
 package sample.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import sample.data.UserRepository;
+import sample.security.UserRepositoryUserDetailsService;
 
 /**
  * @author Joe Grandja
@@ -25,16 +33,41 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+	@Autowired
+	private UserRepository userRepository;
+
 	// @formatter:off
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+			.csrf()
+				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+				.and()
 			.authorizeRequests()
-				.anyRequest().authenticated()
+				.antMatchers("/", "/assets/**", "/webjars/**").permitAll()
+				.mvcMatchers("/users/{userId}").access("@authz.check(#userId,principal)")
+				.anyRequest().hasRole("USER")
 				.and()
-			.oauth2Login()
-				.and()
-			.oauth2Client();
+			.httpBasic();
 	}
 	// @formatter:on
+
+	// @formatter:off
+	@Autowired
+	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+		auth
+			.userDetailsService(userDetailsService())
+				.passwordEncoder(passwordEncoder());
+	}
+	// @formatter:on
+
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return new UserRepositoryUserDetailsService(this.userRepository);
+	}
+
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 }

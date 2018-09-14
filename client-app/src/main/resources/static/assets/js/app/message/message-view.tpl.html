@@ -1,0 +1,30 @@
+<div class="container">
+	<h1>Message</h1>
+	<div class="message-view">
+		<div class="row">
+			<div class="col-sm-1 message-label">To:</div>
+			<div class="col-sm-4">{{currentMessage.to.firstName + ' ' + currentMessage.to.lastName}}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-1 message-label">From:</div>
+			<div class="col-sm-4">{{currentMessage.from.firstName + ' ' + currentMessage.from.lastName}}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-1 message-label">Subject:</div>
+			<div class="col-sm-5">{{currentMessage.summary}}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-1 message-label">Message:</div>
+			<div class="col-sm-7">{{currentMessage.text}}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-1 message-label">Created:</div>
+			<div class="col-sm-3">{{currentMessage.created | date:'MM/dd/yyyy hh:mm a'}}</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-offset-1 col-sm-3">
+				<a class="btn btn-primary" ng-click="goTo(lastView)">Done</a>
+			</div>
+		</div>
+	</div>
+</div>

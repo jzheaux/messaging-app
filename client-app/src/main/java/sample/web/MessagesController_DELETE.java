@@ -15,15 +15,11 @@
  */
 package sample.web;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -34,14 +30,14 @@ import java.util.List;
 /**
  * @author Joe Grandja
  */
-@Controller
-@RequestMapping("/messages")
-public class MessagesController {
+//@Controller
+//@RequestMapping("/messages-old")
+public class MessagesController_DELETE {
 
-	@Value("${oauth2.resource.messages-uri}")
+//	@Value("${oauth2.resource.messages-uri}")
 	private String messagesUri;
 
-	@GetMapping
+//	@GetMapping
 	public String getMessages(@RegisteredOAuth2AuthorizedClient("messaging") OAuth2AuthorizedClient authorizedClient,
 								Authentication authentication, Model model) {
 

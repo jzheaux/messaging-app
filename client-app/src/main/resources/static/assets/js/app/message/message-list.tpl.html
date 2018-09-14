@@ -1,0 +1,25 @@
+<div class="container">
+	<h1>{{messageListType}}</h1>
+	<div>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th class="col-sm-2">Created</th>
+					<th class="col-sm-2">To</th>
+					<th class="col-sm-2">From</th>
+					<th class="col-sm-5">Summary</th>
+					<th class="col-sm-1">Delete</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="message in messages">
+					<td class="col-sm-2">{{ message.created | date:'MM/dd/yyyy hh:mm a' }}</td>
+					<td class="col-sm-2">{{message.to.firstName + ' ' + message.to.lastName}}</td>
+					<td class="col-sm-2">{{message.from.firstName + ' ' + message.from.lastName}}</td>
+					<td class="col-sm-5"><a ng-click="viewMessage(message)">{{message.summary}}</a></td>
+					<td class="col-sm-1"><a ng-click="deleteMessage(message)" class="btn btn-primary btn-xs">Delete</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
