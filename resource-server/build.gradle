@@ -30,5 +30,6 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-security",
             "org.springframework.security:spring-security-data",
             "org.springframework.security:spring-security-oauth2-resource-server",
+            "org.springframework.security:spring-security-oauth2-jose",
             "com.h2database:h2"
 }
