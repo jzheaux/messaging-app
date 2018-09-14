@@ -15,11 +15,14 @@
  */
 package sample.web;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import sample.data.User;
 import sample.data.UserRepository;
 import sample.security.CurrentUser;
 import sample.security.CustomUserDetails;
@@ -31,7 +34,7 @@ import java.util.Collections;
  * @author Joe Grandja
  */
 @RestController
-@RequestMapping(value = "/messages")
+@RequestMapping("/messages")
 public class MessageController {
 	private final UserRepository userRepository;
 
@@ -39,34 +42,36 @@ public class MessageController {
 		this.userRepository = userRepository;
 	}
 
-	@RequestMapping(value = "/inbox")
+	@GetMapping("/inbox")
 	public Iterable<Message> inbox() {
 		// TODO
 		return Collections.emptyList();
 	}
 
-	@RequestMapping(value = "/sent")
+	@GetMapping("/sent")
 	public Iterable<Message> sent() {
 		// TODO
 		return Collections.emptyList();
 	}
 
-	@RequestMapping(value = "/{id}")
+	@GetMapping("/{id}")
 	public Message get(@PathVariable Long id) {
 		// TODO
 		return new Message();
 	}
 
-	@RequestMapping(method = RequestMethod.POST)
+	@PostMapping
 	public Message save(@Valid @RequestBody Message message, @CurrentUser CustomUserDetails currentUser) {
-		message.setToUserId(this.userRepository.findByEmail(message.getToUserId()).getEmail());
-		message.setFromUserId(this.userRepository.findByEmail(currentUser.getUsername()).getEmail());
+		User toUser = this.userRepository.findByEmail(message.getToId());
+		message.setToId(toUser.getEmail());
+		User fromUser = this.userRepository.findByEmail(currentUser.getUsername());
+		message.setFromId(fromUser.getEmail());
 
 		// TODO POST
 		return message;
 	}
 
-	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	@DeleteMapping("/{id}")
 	public void delete(@PathVariable Long id) {
 		// TODO
 	}

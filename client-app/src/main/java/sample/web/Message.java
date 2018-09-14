@@ -35,9 +35,9 @@ public class Message {
 	private Calendar created;
 
 	@NotNull
-	private String toUserId;
+	private String toId;
 
-	private String fromUserId;
+	private String fromId;
 
 	public Long getId() {
 		return this.id;
@@ -71,19 +71,19 @@ public class Message {
 		this.created = created;
 	}
 
-	public String getToUserId() {
-		return this.toUserId;
+	public String getToId() {
+		return this.toId;
 	}
 
-	public void setToUserId(String toUserId) {
-		this.toUserId = toUserId;
+	public void setToId(String toId) {
+		this.toId = toId;
 	}
 
-	public String getFromUserId() {
-		return this.fromUserId;
+	public String getFromId() {
+		return this.fromId;
 	}
 
-	public void setFromUserId(String fromUserId) {
-		this.fromUserId = fromUserId;
+	public void setFromId(String fromId) {
+		this.fromId = fromId;
 	}
 }
