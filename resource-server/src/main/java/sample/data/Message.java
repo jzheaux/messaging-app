@@ -20,7 +20,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 
 /**
@@ -38,12 +37,12 @@ public class Message {
 	@NotEmpty(message = "Summary is required.")
 	private String summary;
 
-	private Calendar created = Calendar.getInstance();
+	private Calendar created;
 
-	@NotNull
+	@NotEmpty(message = "To is required.")
 	private String toId;
 
-	@NotNull
+	@NotEmpty(message = "From is required.")
 	private String fromId;
 
 	public Long getId() {

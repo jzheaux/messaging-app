@@ -4,7 +4,7 @@
 		<div class="form-group">
 			<label for="toUser" class="col-sm-1 control-label">To:</label>
 			<div class="col-sm-3">
-				<select class="form-control" name="toUser" id="toUser" ng-model="newMessage.to.email">
+				<select class="form-control" name="toUser" id="toUser" ng-model="newMessage.toId">
 					<option value="">---Please select---</option>
 					<option ng-repeat="user in users" value="{{user.email}}">{{user.firstName + ' ' + user.lastName}}</option>
 				</select>

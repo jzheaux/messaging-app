@@ -69,7 +69,8 @@ angular.module('secure-messaging-app', [
 	$scope.login = function() {
 		securityService.login($scope.auth, function(response, success) {
 			if (success) {
-				$location.path('/inbox');
+				// Initiate OAuth 2.0 Authorization for client 'messaging'
+                window.location.href = '/oauth2/authorization/messaging';
 			}
 		});
 	};

@@ -14,8 +14,8 @@
 			<tbody>
 				<tr ng-repeat="message in messages">
 					<td class="col-sm-2">{{ message.created | date:'MM/dd/yyyy hh:mm a' }}</td>
-					<td class="col-sm-2">{{message.to.firstName + ' ' + message.to.lastName}}</td>
-					<td class="col-sm-2">{{message.from.firstName + ' ' + message.from.lastName}}</td>
+					<td class="col-sm-2">{{message.toId}}</td>
+					<td class="col-sm-2">{{message.fromId}}</td>
 					<td class="col-sm-5"><a ng-click="viewMessage(message)">{{message.summary}}</a></td>
 					<td class="col-sm-1"><a ng-click="deleteMessage(message)" class="btn btn-primary btn-xs">Delete</a></td>
 				</tr>

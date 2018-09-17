@@ -27,10 +27,14 @@ spring:
             client-secret: secret
             client-authentication-method: basic
             authorization-grant-type: authorization_code
-            redirect-uri-template: "{baseUrl}/messages"
+            redirect-uri-template: "{baseUrl}/oauth2/client/messaging"
             scope: messages
             client-name: Messaging Client
         provider:
           uaa:
             authorization-uri: http://localhost:8090/uaa/oauth/authorize
             token-uri: http://localhost:8090/uaa/oauth/token
+
+oauth2:
+  resource:
+    messages-base-uri: http://localhost:8092/messages

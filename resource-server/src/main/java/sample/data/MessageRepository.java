@@ -23,9 +23,9 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface MessageRepository extends CrudRepository<Message, Long> {
 
-	@Query("select m from Message m where m.toId = ?#{principal.id}")
+	@Query("select m from Message m where m.toId = ?#{principal.claims['user_name']}")
 	Iterable<Message> getInbox();
 
-	@Query("select m from Message m where m.fromId = ?#{principal.id}")
+	@Query("select m from Message m where m.fromId = ?#{principal.claims['user_name']}")
 	Iterable<Message> getSent();
 }

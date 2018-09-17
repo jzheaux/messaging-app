@@ -17,7 +17,7 @@ package sample.web;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sample.data.User;
 import sample.data.UserRepository;
@@ -35,7 +35,7 @@ public class SecurityController {
 		this.userRepository = userRepository;
 	}
 
-	@RequestMapping(value = "/principal")
+	@GetMapping("/principal")
 	public ResponseEntity<User> currentPrincipal(@CurrentUser CustomUserDetails currentUser) {
 		User user = this.userRepository.findById(currentUser.getId()).orElse(null);
 		return new ResponseEntity<>(user, HttpStatus.OK);

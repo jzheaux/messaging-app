@@ -14,7 +14,7 @@ oauth:
       authorized-grant-types: authorization_code
       scope: messages
       authorities: uaa.resource
-      redirect-uri: http://localhost:8080/messages
+      redirect-uri: http://localhost:8080/oauth2/client/messaging
 
 scim:
   users:

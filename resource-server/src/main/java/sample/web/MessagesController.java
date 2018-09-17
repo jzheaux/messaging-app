@@ -26,6 +26,7 @@ import sample.data.Message;
 import sample.data.MessageRepository;
 
 import javax.validation.Valid;
+import java.util.Calendar;
 
 /**
  * @author Joe Grandja
@@ -56,6 +57,7 @@ public class MessagesController {
 
 	@PostMapping
 	public Message save(@Valid @RequestBody Message message) {
+		message.setCreated(Calendar.getInstance());
 		return this.messageRepository.save(message);
 	}
 

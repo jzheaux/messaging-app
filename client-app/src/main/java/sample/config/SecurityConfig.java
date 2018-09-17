@@ -24,6 +24,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.ModelAndView;
 import sample.data.UserRepository;
 import sample.security.UserRepositoryUserDetailsService;
 
@@ -48,7 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.mvcMatchers("/users/{userId}").access("@authz.check(#userId,principal)")
 				.anyRequest().hasRole("USER")
 				.and()
-			.httpBasic();
+			.httpBasic()
+				.and()
+			.oauth2Client();
 	}
 	// @formatter:on
 
@@ -69,5 +74,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+
+	@Controller
+	static class OAuth2ClientController {
+
+		@GetMapping("/oauth2/client/messaging")
+		public ModelAndView authorizedClientMessaging() {
+			return new ModelAndView("redirect:/");
+		}
 	}
 }

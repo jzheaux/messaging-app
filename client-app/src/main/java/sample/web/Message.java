@@ -17,7 +17,6 @@ package sample.web;
 
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.Calendar;
 
 /**
@@ -34,7 +33,7 @@ public class Message {
 
 	private Calendar created;
 
-	@NotNull
+	@NotEmpty(message = "To is required.")
 	private String toId;
 
 	private String fromId;

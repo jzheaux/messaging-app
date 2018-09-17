@@ -15,9 +15,9 @@
  */
 package sample.web;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import sample.data.User;
 import sample.data.UserRepository;
@@ -34,12 +34,12 @@ public class UserController {
 		this.userRepository = userRepository;
 	}
 
-	@RequestMapping(method = RequestMethod.GET)
+	@GetMapping
 	public Iterable<User> get() {
 		return this.userRepository.findAll();
 	}
 
-	@RequestMapping("/{id}")
+	@GetMapping("/{id}")
 	public User user(@PathVariable Long id) {
 		return this.userRepository.findById(id).orElse(null);
 	}
