@@ -15,29 +15,19 @@
  */
 package sample.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
-import sample.data.UserRepository;
-import sample.security.UserRepositoryUserDetailsService;
 
 /**
  * @author Joe Grandja
  */
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-	@Autowired
-	private UserRepository userRepository;
 
 	// @formatter:off
 	@Override
@@ -47,34 +37,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 				.and()
 			.authorizeRequests()
-				.antMatchers("/", "/assets/**", "/webjars/**").permitAll()
-				.mvcMatchers("/users/{userId}").access("@authz.check(#userId,principal)")
-				.anyRequest().hasRole("USER")
+				.anyRequest().authenticated()
 				.and()
-			.httpBasic()
+			.oauth2Login()
+				.loginPage("/oauth2/authorization/messaging-login")
+				.failureUrl("/login?error")
+				.defaultSuccessUrl("/oauth2/authorization/messaging", true)
+				.permitAll()
 				.and()
 			.oauth2Client();
 	}
 	// @formatter:on
-
-	// @formatter:off
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth
-			.userDetailsService(userDetailsService())
-				.passwordEncoder(passwordEncoder());
-	}
-	// @formatter:on
-
-	@Bean
-	public UserDetailsService userDetailsService() {
-		return new UserRepositoryUserDetailsService(this.userRepository);
-	}
-
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
 
 	@Controller
 	static class OAuth2ClientController {

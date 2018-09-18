@@ -21,8 +21,10 @@ import org.springframework.data.repository.query.Param;
 /**
  * @author Joe Grandja
  */
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface UserProfileRepository extends CrudRepository<UserProfile, Long> {
 
-	User findByEmail(@Param("email") String email);
+	UserProfile findByEmail(@Param("email") String email);
+
+	UserProfile findByUserId(@Param("userId") String userId);
 
 }

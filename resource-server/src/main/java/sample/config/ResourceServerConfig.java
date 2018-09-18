@@ -36,6 +36,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 				.mvcMatchers("/messages/**").access("hasAuthority('SCOPE_messages')")
+				.mvcMatchers("/contacts/**").access("hasAuthority('SCOPE_contacts')")
 				.anyRequest().authenticated()
 				.and()
 			.oauth2ResourceServer()

@@ -17,27 +17,33 @@ package sample.web;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sample.data.User;
-import sample.data.UserRepository;
-import sample.security.CurrentUser;
-import sample.security.CustomUserDetails;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 /**
  * @author Joe Grandja
  */
 @RestController
 public class SecurityController {
-	private final UserRepository userRepository;
-
-	public SecurityController(UserRepository userRepository) {
-		this.userRepository = userRepository;
-	}
 
 	@GetMapping("/principal")
-	public ResponseEntity<User> currentPrincipal(@CurrentUser CustomUserDetails currentUser) {
-		User user = this.userRepository.findById(currentUser.getId()).orElse(null);
+	public ResponseEntity<User> currentPrincipal(@AuthenticationPrincipal OidcUser oidcUser) {
+		User user = new User();
+		user.setUserId(oidcUser.getClaimAsString("user_name"));
+		user.setFirstName(oidcUser.getGivenName());
+		user.setLastName(oidcUser.getFamilyName());
+		user.setEmail(oidcUser.getEmail());
 		return new ResponseEntity<>(user, HttpStatus.OK);
+	}
+
+	@GetMapping(path = "/login", params = "error")
+	public ResponseEntity<String> loginError(@SessionAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) AuthenticationException authEx) {
+		String errorMsg = authEx != null ? authEx.getMessage() : "[unknown error]";
+		return new ResponseEntity<>(errorMsg, HttpStatus.UNAUTHORIZED);
 	}
 }

@@ -15,31 +15,29 @@
  */
 package sample.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Set;
 
 /**
  * @author Joe Grandja
  */
 @Entity
-public class User implements Serializable {
+public class UserProfile implements Serializable {
 	private static final long serialVersionUID = 2738859149330833739L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+
+	@NotEmpty(message = "User ID is required.")
+	@Column(unique = true, nullable = false)
+	private String userId;			// User ID - at Provider
 
 	@NotEmpty(message = "First name is required.")
 	private String firstName;
@@ -49,26 +47,7 @@ public class User implements Serializable {
 
 	@Email(message = "Please provide a valid email address.")
 	@NotEmpty(message = "Email is required.")
-	@Column(unique = true, nullable = false)
 	private String email;
-
-	@NotEmpty(message = "Password is required.")
-	private String password;
-
-	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-	private Set<UserAuthority> authorities;
-
-	public User() {
-	}
-
-	public User(User user) {
-		this.id = user.id;
-		this.firstName = user.firstName;
-		this.lastName = user.lastName;
-		this.email = user.email;
-		this.password = user.password;
-		this.authorities = Collections.emptySet();
-	}
 
 	public Long getId() {
 		return this.id;
@@ -76,6 +55,14 @@ public class User implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getUserId() {
+		return this.userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getFirstName() {
@@ -100,23 +87,5 @@ public class User implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	@JsonIgnore
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	@JsonIgnore
-	public Set<UserAuthority> getAuthorities() {
-		return this.authorities;
-	}
-
-	public void setAuthorities(Set<UserAuthority> authorities) {
-		this.authorities = authorities;
 	}
 }

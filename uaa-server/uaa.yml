@@ -11,16 +11,17 @@ oauth:
   clients:
     messaging:
       secret: secret
-      authorized-grant-types: authorization_code
-      scope: messages
+      authorized-grant-types: authorization_code,client_credentials
+      scope: openid,profile,email,messages
       authorities: uaa.resource
-      redirect-uri: http://localhost:8080/oauth2/client/messaging
+      redirect-uri: http://localhost:8080/login/oauth2/code/messaging-login,http://localhost:8080/oauth2/client/messaging
+      authorities: contacts
 
 scim:
   users:
-    - josh@example.com|password|josh@example.com|Josh|Cummings|uaa.user,profile,email,messages
-    - joe@example.com|password|joe@example.com|Joe|Grandja|uaa.user,profile,email,messages
-    - rob@example.com|password|rob@example.com|Rob|Winch|uaa.user,profile,email,messages
+    - jcummings|password|jcummings@springsecurity.io|Josh|Cummings|uaa.user,profile,email,messages,contacts
+    - jgrandja|password|jgrandja@springsecurity.io|Joe|Grandja|uaa.user,profile,email,messages,contacts
+    - rwinch|password|rwinch@springsecurity.io|Rob|Winch|uaa.user,profile,email,messages,contacts
 
 jwt:
   token:

@@ -6,7 +6,7 @@
 			<div class="col-sm-3">
 				<select class="form-control" name="toUser" id="toUser" ng-model="newMessage.toId">
 					<option value="">---Please select---</option>
-					<option ng-repeat="user in users" value="{{user.email}}">{{user.firstName + ' ' + user.lastName}}</option>
+					<option ng-repeat="user in users" value="{{user.userId}}">{{user.firstName + ' ' + user.lastName}}</option>
 				</select>
 			</div>
 		</div>

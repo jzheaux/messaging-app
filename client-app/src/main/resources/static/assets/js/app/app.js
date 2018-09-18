@@ -8,10 +8,11 @@ angular.module('secure-messaging-app', [
   	'underscore'
 ])
 
-.factory('authInterceptor', ['$q', '$rootScope', '$location', function($q, $rootScope, $location) {
+.factory('responseInterceptor', ['$q', '$rootScope', '$location', function($q, $rootScope, $location) {
 	var responseError = function(response) {
-		if (response.status === 401) {
-			$location.path('/login');
+		if (response.status >= 400) {
+			var errorMessage = "An error occurred: [Status " + response.status + "] " + response.statusText;
+            console.log("***** " + errorMessage);
 			return $q.reject(response);
 		}
 		return response;
@@ -24,7 +25,7 @@ angular.module('secure-messaging-app', [
 
 .config(['$httpProvider', function($httpProvider) {
 	$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-	$httpProvider.interceptors.push('authInterceptor');
+	$httpProvider.interceptors.push('responseInterceptor');
 }])
 
 .constant('BASE_API_ENDPOINT', '')
@@ -56,30 +57,11 @@ angular.module('secure-messaging-app', [
 	};
 
 	var init = function() {
-		if($location.path() != '' && $location.path() != '/login') {
-			$scope.getCurrentPrincipal();
-		}
+		$scope.getCurrentPrincipal();
 	};
 
 	init();
 
-}])
-
-.controller('loginController', ['$scope', '$location', 'commonService', 'securityService', function ($scope, $location, commonService, securityService) {
-	$scope.login = function() {
-		securityService.login($scope.auth, function(response, success) {
-			if (success) {
-				// Initiate OAuth 2.0 Authorization for client 'messaging'
-                window.location.href = '/oauth2/authorization/messaging';
-			}
-		});
-	};
-
-	var init = function() {
-		$scope.auth = {};
-	};
-
-	init();
 }])
 
 .directive('headerDirective', function() {

@@ -15,26 +15,39 @@ spring:
     allow-bean-definition-overriding: true
   jackson:
     date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
-  datasource:
-    data: classpath:data.sql,classpath:password-encode.sql
   security:
     oauth2:
       client:
         registration:
+          messaging-login:
+            provider: uaa
+            client-id: messaging
+            client-secret: secret
+            authorization-grant-type: authorization_code
+            redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: openid,profile,email
           messaging:
             provider: uaa
             client-id: messaging
             client-secret: secret
-            client-authentication-method: basic
             authorization-grant-type: authorization_code
             redirect-uri-template: "{baseUrl}/oauth2/client/messaging"
             scope: messages
-            client-name: Messaging Client
+          contacts:
+            provider: uaa
+            client-id: messaging
+            client-secret: secret
+            authorization-grant-type: client_credentials
+            scope: contacts
         provider:
           uaa:
             authorization-uri: http://localhost:8090/uaa/oauth/authorize
             token-uri: http://localhost:8090/uaa/oauth/token
+            user-info-uri: http://localhost:8090/uaa/userinfo
+            user-name-attribute: sub
+            jwk-set-uri: http://localhost:8090/uaa/token_keys
 
 oauth2:
   resource:
     messages-base-uri: http://localhost:8092/messages
+    contacts-base-uri: http://localhost:8092/contacts

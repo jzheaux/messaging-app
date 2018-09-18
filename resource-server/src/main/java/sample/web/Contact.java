@@ -13,18 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package sample.security;
-
-import org.springframework.stereotype.Component;
-import sample.data.User;
+package sample.web;
 
 /**
  * @author Joe Grandja
  */
-@Component
-public class Authz {
+public class Contact {
+	private String userId;
+	private String firstName;
+	private String lastName;
+	private String email;
 
-	public boolean check(Long userId, User user) {
-		return userId.equals(user.getId());
+	public String getUserId() {
+		return this.userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	public String getFirstName() {
+		return this.firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return this.lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getEmail() {
+		return this.email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }
