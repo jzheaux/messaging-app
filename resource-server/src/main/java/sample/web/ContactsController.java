@@ -15,15 +15,16 @@
  */
 package sample.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import sample.data.UserProfile;
+import sample.data.UserProfileRepository;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sample.data.UserProfile;
-import sample.data.UserProfileRepository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Joe Grandja
@@ -40,7 +41,7 @@ public class ContactsController {
 	@GetMapping
 	public Iterable<Contact> getContacts() {
 		List<Contact> contacts = new ArrayList<>();
-		this.userProfileRepository.findAll()
+		this.userProfileRepository.findByUserContacts()
 				.forEach(userProfile -> contacts.add(asContact(userProfile)));
 		return contacts;
 	}

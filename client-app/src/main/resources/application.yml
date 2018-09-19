@@ -19,26 +19,19 @@ spring:
     oauth2:
       client:
         registration:
-          messaging-login:
-            provider: uaa
-            client-id: messaging
-            client-secret: secret
-            authorization-grant-type: authorization_code
-            redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
-            scope: openid,profile,email
           messaging:
             provider: uaa
             client-id: messaging
             client-secret: secret
             authorization-grant-type: authorization_code
-            redirect-uri-template: "{baseUrl}/oauth2/client/messaging"
-            scope: messages
-          contacts:
+            redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope: openid,profile,email,messages,contacts
+          admin:
             provider: uaa
-            client-id: messaging
+            client-id: admin
             client-secret: secret
             authorization-grant-type: client_credentials
-            scope: contacts
+            scope: admin
         provider:
           uaa:
             authorization-uri: http://localhost:8090/uaa/oauth/authorize
