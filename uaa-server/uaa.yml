@@ -10,6 +10,7 @@ oauth:
       - oauth.approvals
   clients:
     messaging:
+      name: Mixed Messages
       secret: secret
       authorized-grant-types: authorization_code,client_credentials
       scope: openid,profile,email,messages
@@ -18,6 +19,10 @@ oauth:
       authorities: contacts
 
 scim:
+  groups:
+    email: Access your email address
+    messages: Read and write messages
+    contacts: Access your list of contacts
   users:
     - jcummings|password|jcummings@springsecurity.io|Josh|Cummings|uaa.user,profile,email,messages,contacts
     - jgrandja|password|jgrandja@springsecurity.io|Joe|Grandja|uaa.user,profile,email,messages,contacts
