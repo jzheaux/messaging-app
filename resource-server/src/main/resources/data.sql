@@ -2,6 +2,12 @@ insert into user_profile(id,user_id,first_name,last_name,email) values (100,'jcu
 insert into user_profile(id,user_id,first_name,last_name,email) values (101,'jgrandja','Joe','Grandja','jgrandja@springsecurity.io');
 insert into user_profile(id,user_id,first_name,last_name,email) values (102,'rwinch','Rob','Winch','rwinch@springsecurity.io');
 
+insert into user_contact(id,owner_user_id,contact_user_id) values (100,'jcummings','jgrandja');
+insert into user_contact(id,owner_user_id,contact_user_id) values (101,'jcummings','rwinch');
+
+insert into user_contact(id,owner_user_id,contact_user_id) values (102,'jgrandja','jcummings');
+insert into user_contact(id,owner_user_id,contact_user_id) values (103,'jgrandja','rwinch');
+
 insert into message(id,created,to_id,from_id,summary,text) values (100,'2018-09-20 08:00:00','jcummings','jgrandja','Hello Josh','This message is for Josh');
 insert into message(id,created,to_id,from_id,summary,text) values (101,'2018-09-20 10:00:00','jcummings','rwinch','How are you Josh?','This message is for Josh');
 insert into message(id,created,to_id,from_id,summary,text) values (102,'2018-09-21 14:00:00','jcummings','jgrandja','Is this secure?','This message is for Josh');

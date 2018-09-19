@@ -15,6 +15,8 @@
  */
 package sample.data;
 
+import java.util.Collection;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -24,8 +26,8 @@ import org.springframework.data.repository.CrudRepository;
 public interface MessageRepository extends CrudRepository<Message, Long> {
 
 	@Query("select m from Message m where m.toId = ?#{principal.claims['user_name']}")
-	Iterable<Message> getInbox();
+	Collection<Message> getInbox();
 
 	@Query("select m from Message m where m.fromId = ?#{principal.claims['user_name']}")
-	Iterable<Message> getSent();
+	Collection<Message> getSent();
 }

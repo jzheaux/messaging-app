@@ -19,9 +19,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @author Joe Grandja
@@ -40,21 +37,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.anyRequest().authenticated()
 				.and()
 			.oauth2Login()
-				.loginPage("/oauth2/authorization/messaging-login")
+				.loginPage("/oauth2/authorization/messaging")
 				.failureUrl("/login?error")
-				.defaultSuccessUrl("/oauth2/authorization/messaging", true)
 				.permitAll()
 				.and()
 			.oauth2Client();
 	}
 	// @formatter:on
-
-	@Controller
-	static class OAuth2ClientController {
-
-		@GetMapping("/oauth2/client/messaging")
-		public ModelAndView authorizedClientMessaging() {
-			return new ModelAndView("redirect:/");
-		}
-	}
 }

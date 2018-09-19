@@ -15,11 +15,15 @@ oauth:
     messaging:
       name: Mixed Messages
       secret: secret
-      authorized-grant-types: authorization_code,client_credentials
-      scope: openid,profile,email,messages
+      authorized-grant-types: authorization_code
+      scope: openid,profile,email,messages,contacts
       authorities: uaa.resource
-      redirect-uri: http://localhost:8080/login/oauth2/code/messaging-login,http://localhost:8080/oauth2/client/messaging
-      authorities: contacts
+      redirect-uri: http://localhost:8080/login/oauth2/code/messaging
+    admin:
+      secret: secret
+      authorized-grant-types: client_credentials
+      scope: openid,profile
+      authorities: admin
     expired:
       secret: secret
       access-token-validity: 1

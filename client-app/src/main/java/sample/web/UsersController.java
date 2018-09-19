@@ -15,6 +15,8 @@
  */
 package sample.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -24,8 +26,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.List;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
 
@@ -45,7 +45,7 @@ public class UsersController {
 	}
 
 	@GetMapping
-	public Iterable<User> getUsers(@RegisteredOAuth2AuthorizedClient("contacts") OAuth2AuthorizedClient contactsClient) {
+	public Iterable<User> getUsers(@RegisteredOAuth2AuthorizedClient("messaging") OAuth2AuthorizedClient contactsClient) {
 		ParameterizedTypeReference<List<User>> typeRef = new ParameterizedTypeReference<List<User>>() {};
 		return this.webClient
 				.get()
@@ -58,7 +58,7 @@ public class UsersController {
 
 	@GetMapping("/{id}")
 	public User getUser(@PathVariable Long id,
-						@RegisteredOAuth2AuthorizedClient("contacts") OAuth2AuthorizedClient contactsClient) {
+						@RegisteredOAuth2AuthorizedClient("messaging") OAuth2AuthorizedClient contactsClient) {
 		return this.webClient
 				.get()
 				.uri(this.contactsBaseUri + "/" + id)
