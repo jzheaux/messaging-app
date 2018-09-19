@@ -30,6 +30,7 @@ angular.module('secure-messaging-app', [
 }])
 
 .constant('BASE_API_ENDPOINT', '')
+.constant('PROVIDER_ENDPOINT', 'http://localhost:8090/uaa')
 
 .controller('appController', ['$scope', '$location', 'commonService', 'securityService', function ($scope, $location, commonService, securityService) {
 	$scope.updateCurrentActiveLink = function (clickedLink) {

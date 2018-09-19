@@ -18,7 +18,7 @@ oauth:
       authorized-grant-types: authorization_code
       scope: openid,profile,email,messages,contacts
       authorities: uaa.resource
-      redirect-uri: http://localhost:8080/login/oauth2/code/messaging
+      redirect-uri: http://localhost:8080/login/oauth2/code/messaging,http://localhost:8080
     admin:
       secret: secret
       authorized-grant-types: client_credentials
