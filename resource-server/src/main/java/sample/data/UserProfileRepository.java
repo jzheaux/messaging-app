@@ -31,6 +31,7 @@ public interface UserProfileRepository extends CrudRepository<UserProfile, Long>
 	UserProfile findByUserId(@Param("userId") String userId);
 
 	@Query("select u from UserProfile u, UserContact c " +
-			"where u.userId = c.contactUserId")
+			"where u.userId = c.contactUserId and " +
+			"c.ownerUserId = ?#{principal.claims['user_name']}")
 	Collection<UserProfile> findByUserContacts();
 }
