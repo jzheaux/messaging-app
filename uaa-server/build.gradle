@@ -13,9 +13,15 @@ repositories {
     mavenCentral()
 }
 
+
+if (System.getenv("TOMCAT_HOME") == null) {
+  ext['tomcatHomeDir'] = '/Users/jgrandja/DevTools/apache-tomcat-8.0.33'
+} else {
+  ext['tomcatHomeDir'] = System.getenv("TOMCAT_HOME");
+}
+
 ext {
     uaaVersion = '4.11.0'
-    tomcatHomeDir = '/Users/jgrandja/DevTools/apache-tomcat-8.0.33'
 }
 
 configurations {
