@@ -14,8 +14,4 @@ spring:
     date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
   datasource:
     data: classpath:data.sql
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: http://localhost:8090/uaa/token_keys
+
