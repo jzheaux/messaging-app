@@ -15,9 +15,8 @@
  */
 package sample.web;
 
+
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import sample.data.Message;
@@ -25,11 +24,6 @@ import sample.data.MessageRepository;
 import sample.data.UserProfile;
 import sample.data.UserProfileRepository;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,14 +49,8 @@ public class MessagesController {
 	}
 
 	@GetMapping("/inbox")
-	public Iterable<Message> inbox(@AuthenticationPrincipal JwtAuthenticationToken token) {
-		if (!hasAuthority(token, "SCOPE_contacts")) {
-			return this.messageRepository.getInbox();
-		}
-
-		return this.messageRepository.getInbox().stream()
-				.map(this::addUserInformation)
-				.collect(Collectors.toList());
+	public Iterable<Message> inbox() {
+		return this.messageRepository.getInbox();
 	}
 
 	@GetMapping("/sent")
@@ -93,11 +81,5 @@ public class MessagesController {
 		message.setFromId(fromUser.getFirstName());
 		message.setToId(toUser.getFirstName());
 		return message;
-	}
-
-	private boolean hasAuthority(Authentication authentication, String authority) {
-		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(authority);
-		return authorities.contains(grantedAuthority);
 	}
 }
