@@ -12,9 +12,9 @@
 			</div>
 			<div class="navbar-collapse collapse" id="navbar">
 				<ul class="nav navbar-nav">
-					<li><a href="#inbox" ng-click="updateCurrentActiveLink('inbox')" ng-class="{active : isCurrentActiveLink('inbox')}">Inbox</a></li>
-					<li><a href="#sent" ng-click="updateCurrentActiveLink('sent')" ng-class="{active : isCurrentActiveLink('sent')}">Sent</a></li>
-					<li><a href="#compose" ng-click="updateCurrentActiveLink('compose')" ng-class="{active : isCurrentActiveLink('compose')}">Compose</a></li>
+					<li><a href="#inbox" keyboard-shortcut="i" ng-click="updateCurrentActiveLink('inbox')" ng-class="{active : isCurrentActiveLink('inbox')}">Inbox</a></li>
+					<li><a href="#sent" keyboard-shortcut="s" ng-click="updateCurrentActiveLink('sent')" ng-class="{active : isCurrentActiveLink('sent')}">Sent</a></li>
+					<li><a href="#compose" keyboard-shortcut="c" ng-click="updateCurrentActiveLink('compose')" ng-class="{active : isCurrentActiveLink('compose')}">Compose</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li class="dropdown">

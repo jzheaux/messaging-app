@@ -5,7 +5,8 @@ angular.module('secure-messaging-app', [
 	'secure-messaging-app.security-service',
 	'secure-messaging-app.util',
   	'ui.bootstrap',
-  	'underscore'
+  	'underscore',
+  	'angular-keyboard'
 ])
 
 .factory('responseInterceptor', ['$q', '$rootScope', '$location', function($q, $rootScope, $location) {
