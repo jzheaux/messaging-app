@@ -21,7 +21,7 @@ angular.module('secure-messaging-app.security-service', [
 
 }])
 
-.factory('securityService', ['$rootScope', '$location', 'securityEndpoints', 'commonService', 'alertService', function ($rootScope, $location, securityEndpoints, commonService, alertService) {
+.factory('securityService', ['$rootScope', '$location', 'securityEndpoints', 'commonService', 'alertService', 'PROVIDER_ENDPOINT', function ($rootScope, $location, securityEndpoints, commonService, alertService, PROVIDER_ENDPOINT) {
 	var currentPrincipal = function() {
 		console.log("***** Current Principal");
 		securityEndpoints.currentPrincipal.query()
@@ -44,7 +44,7 @@ angular.module('secure-messaging-app.security-service', [
 				console.log("***** Logout Success");
 				commonService.setProperty(commonService.CURRENT_PRINCIPAL_KEY, null);
 				$rootScope.$broadcast(commonService.EVENT_TYPES.CURRENT_PRINCIPAL_CHANGE_EVENT);
-				window.location.href = "/";
+				window.location.href = PROVIDER_ENDPOINT + "/logout.do?client_id=messaging&redirect=http://localhost:8080";
 			})
 			.catch(function(error) {
 				console.log("***** Logout Failed: " + JSON.stringify(error.data));
