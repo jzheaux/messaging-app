@@ -17,11 +17,12 @@ apply plugin: 'io.spring.dependency-management'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-ext['spring-security.version'] = '5.1.0.RC2'
+ext['spring-security.version'] = '5.1.0.BUILD-SNAPSHOT'
 
 repositories {
     maven { url "https://repo.spring.io/libs-milestone" }
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
