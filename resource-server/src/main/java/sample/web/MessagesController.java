@@ -56,7 +56,7 @@ public class MessagesController {
 
 	@GetMapping("/inbox")
 	public Iterable<Message> inbox(@AuthenticationPrincipal Authentication token) {
-		if (!hasAuthority(token, "SCOPE_contacts")) {
+		if (!hasAuthority(token, "contacts")) {
 			return this.messageRepository.getInbox();
 		}
 
@@ -67,7 +67,7 @@ public class MessagesController {
 
 	@GetMapping("/sent")
 	public Iterable<Message> sent(@AuthenticationPrincipal Authentication token) {
-		if (!hasAuthority(token, "SCOPE_contacts")) {
+		if (!hasAuthority(token, "contacts")) {
 			return this.messageRepository.getSent();
 		}
 
