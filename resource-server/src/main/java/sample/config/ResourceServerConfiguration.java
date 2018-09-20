@@ -17,6 +17,7 @@ package sample.config;
 
 import sample.security.AudienceValidator;
 import sample.security.GrantedAuthoritiesExtractor;
+import sample.security.MoreInformativeAuthenticationEntryPoint;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -50,6 +51,7 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 				.anyRequest().authenticated()
 				.and()
 			.oauth2ResourceServer()
+				.authenticationEntryPoint(new MoreInformativeAuthenticationEntryPoint())
 				.jwt()
 					.jwtAuthenticationConverter(new GrantedAuthoritiesExtractor());
 	}
