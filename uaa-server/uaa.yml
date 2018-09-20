@@ -20,6 +20,11 @@ oauth:
       authorities: uaa.resource
       redirect-uri: http://localhost:8080/login/oauth2/code/messaging-login,http://localhost:8080/oauth2/client/messaging
       authorities: contacts
+    expired:
+      secret: secret
+      access-token-validity: 1
+      authorized-grant-types: client_credentials
+      scope: openid,profile
 
 scim:
   groups:
