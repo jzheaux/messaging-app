@@ -31,6 +31,5 @@ dependencies {
             "org.springframework.security:spring-security-data",
             "org.springframework.security:spring-security-oauth2-resource-server",
             "org.springframework.security:spring-security-oauth2-jose",
-            "com.nimbusds:oauth2-oidc-sdk:6.0",
             "com.h2database:h2"
 }

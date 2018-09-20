@@ -15,17 +15,30 @@
  */
 package sample.config;
 
+import sample.security.AudienceValidator;
 import sample.security.GrantedAuthoritiesExtractor;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtDecoders;
+import org.springframework.security.oauth2.jwt.JwtValidators;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoderJwkSupport;
 
 /**
  * @author Josh Cummings
  */
 @EnableWebSecurity
 public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
+
+	@Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+	String issuerUri;
 
 	// @formatter:off
 	@Override
@@ -41,4 +54,17 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 					.jwtAuthenticationConverter(new GrantedAuthoritiesExtractor());
 	}
 	// @formatter:on
+
+	@Bean
+	JwtDecoder jwtDecoder() {
+		NimbusJwtDecoderJwkSupport decoder = (NimbusJwtDecoderJwkSupport)
+				JwtDecoders.fromOidcIssuerLocation(this.issuerUri);
+
+		OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(this.issuerUri);
+		OAuth2TokenValidator<Jwt> withAudience =
+				new DelegatingOAuth2TokenValidator<>(withIssuer, new AudienceValidator());
+		decoder.setJwtValidator(withAudience);
+
+		return decoder;
+	}
 }
