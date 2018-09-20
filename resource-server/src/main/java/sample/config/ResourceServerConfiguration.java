@@ -17,6 +17,7 @@ package sample.config;
 
 import sample.security.AudienceValidator;
 import sample.security.GrantedAuthoritiesExtractor;
+import sample.security.MoreInformativeAccessDeniedHandler;
 import sample.security.MoreInformativeAuthenticationEntryPoint;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -46,11 +47,12 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-				.mvcMatchers("/messages/**").hasAuthority("messages")
-				.mvcMatchers("/contacts/**").hasAuthority("contacts")
+				.mvcMatchers("/messages/**").access("@authorizer.complainingHasAuthority(authentication, 'messages')")
+				.mvcMatchers("/contacts/**").access("@authorizer.complainingHasAuthority(authentication, 'contacts')")
 				.anyRequest().authenticated()
 				.and()
 			.oauth2ResourceServer()
+				.accessDeniedHandler(new MoreInformativeAccessDeniedHandler())
 				.authenticationEntryPoint(new MoreInformativeAuthenticationEntryPoint())
 				.jwt()
 					.jwtAuthenticationConverter(new GrantedAuthoritiesExtractor());
