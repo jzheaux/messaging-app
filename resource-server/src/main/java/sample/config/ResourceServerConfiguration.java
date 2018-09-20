@@ -15,6 +15,8 @@
  */
 package sample.config;
 
+import sample.security.GrantedAuthoritiesExtractor;
+
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -30,12 +32,13 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-				.mvcMatchers("/messages/**").hasAuthority("SCOPE_messages")
-				.mvcMatchers("/contacts/**").hasAuthority("SCOPE_contacts")
+				.mvcMatchers("/messages/**").hasAuthority("messages")
+				.mvcMatchers("/contacts/**").hasAuthority("contacts")
 				.anyRequest().authenticated()
 				.and()
 			.oauth2ResourceServer()
-				.jwt();
+				.jwt()
+					.jwtAuthenticationConverter(new GrantedAuthoritiesExtractor());
 	}
 	// @formatter:on
 }
