@@ -18,27 +18,20 @@ package sample.web;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.WebAttributes;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 /**
  * @author Joe Grandja
  */
-@RestController
-public class SecurityController {
+@Controller
+public class DefaultController {
 
-	@GetMapping("/principal")
-	public ResponseEntity<User> currentPrincipal(@AuthenticationPrincipal OidcUser oidcUser) {
-		User user = new User();
-		user.setUserId(oidcUser.getClaimAsString("user_name"));
-		user.setFirstName(oidcUser.getGivenName());
-		user.setLastName(oidcUser.getFamilyName());
-		user.setEmail(oidcUser.getEmail());
-		return new ResponseEntity<>(user, HttpStatus.OK);
+	@GetMapping("/")
+	public String index() {
+		return "redirect:/messages/inbox";
 	}
 
 	@GetMapping(path = "/login", params = "error")

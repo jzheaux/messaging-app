@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>SecureMail: Spring Security</title>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico" th:href="@{/assets/img/favicon.ico}"/>
+        <link rel="stylesheet" href="/webjars/bootstrap/css/bootstrap.css" th:href="@{/webjars/bootstrap/css/bootstrap.css}" />
+        <link rel="stylesheet" href="/assets/css/custom.css" th:href="@{/assets/css/custom.css}"/>
+    </head>
+    <body>
+        <div th:fragment="header">
+            <nav class="navbar navbar-default">
+                <div class="container">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <button aria-controls="navbar" aria-expanded="false" class="navbar-toggle collapsed" data-target="#navbar" data-toggle="collapse" type="button">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand" href="#"><img src="/assets/img/logo.png" th:src="@{/assets/img/logo.png}" /></a>
+                        </div>
+                        <div class="navbar-collapse collapse" id="navbar">
+                            <ul class="nav navbar-nav">
+                                <li><a href="/messages/inbox" th:href="@{/messages/inbox}">Inbox</a></li>
+                                <li><a href="/messages/sent" th:href="@{/messages/sent}">Sent</a></li>
+                                <li><a href="/messages/compose" th:href="@{/messages/compose}">Compose</a></li>
+                            </ul>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="dropdown">
+                                    <a id="user-menu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" th:text="${currentUser.firstName} + ' ' + ${currentUser.lastName}">User</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a id="sign-out" href="javascript:document.logoutForm.submit()">Sign Out</a></li>
+                                    </ul>
+                                    <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+                                        <input hidden type="submit" value="Sign Out"/>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div><!--/.nav-collapse -->
+                    </div><!--/.container-fluid -->
+                </div>
+            </nav>
+        </div>
+        <div th:fragment="footer">
+            <footer>
+                <div class="container hidden-print">
+                    <div class="text-center">
+                        <p class="muted credit">Visit the <a href="https://spring.io/projects/spring-security" target="_blank">Spring Security</a> site for more <a href="https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#sample-apps" target="_blank">samples</a>.</p>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </body>
+</html>

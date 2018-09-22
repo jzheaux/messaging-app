@@ -13,6 +13,8 @@ spring:
   main:
     web-application-type: servlet
     allow-bean-definition-overriding: true
+  thymeleaf:
+    cache: false
   jackson:
     date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
   security:

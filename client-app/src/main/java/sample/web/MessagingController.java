@@ -22,43 +22,62 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.thymeleaf.util.StringUtils;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
 
 /**
  * @author Joe Grandja
  */
-@RestController
+@Controller
 @RequestMapping("/messages")
 public class MessagingController {
+	private static final String MESSAGE_ATTRIBUTE_NAME = "message";
+	private static final String MESSAGES_ATTRIBUTE_NAME = "messages";
+	private static final String MESSAGE_TYPE_ATTRIBUTE_NAME = "messageType";
+	private static final String USERS_ATTRIBUTE_NAME = "users";
+	private static final String MESSAGE_TYPE_INBOX = "Inbox";
+	private static final String MESSAGE_TYPE_SENT = "Sent";
 	private final WebClient webClient;
 	private final String messagesBaseUri;
+	private final String contactsBaseUri;
 
 	public MessagingController(WebClient webClient,
-								@Value("${oauth2.resource.messages-base-uri}") String messagesBaseUri) {
+								@Value("${oauth2.resource.messages-base-uri}") String messagesBaseUri,
+								@Value("${oauth2.resource.contacts-base-uri}") String contactsBaseUri) {
 		this.webClient = webClient;
 		this.messagesBaseUri = messagesBaseUri;
+		this.contactsBaseUri = contactsBaseUri;
 	}
 
 	@GetMapping("/inbox")
-	public Iterable<Message> inbox(@RegisteredOAuth2AuthorizedClient("messaging") OAuth2AuthorizedClient messagingClient) {
-		return getMessages(messagingClient, this.messagesBaseUri + "/inbox");
+	public String inbox(@RegisteredOAuth2AuthorizedClient("messaging") OAuth2AuthorizedClient messagingClient,
+						Map<String, Object> model) {
+		List<Message> messages = getMessages(messagingClient, this.messagesBaseUri + "/inbox");
+		model.put(MESSAGES_ATTRIBUTE_NAME, messages);
+		model.put(MESSAGE_TYPE_ATTRIBUTE_NAME, MESSAGE_TYPE_INBOX);
+		return "message-list";
 	}
 
 	@GetMapping("/sent")
-	public Iterable<Message> sent(@RegisteredOAuth2AuthorizedClient("messaging") OAuth2AuthorizedClient messagingClient) {
-		return getMessages(messagingClient, this.messagesBaseUri + "/sent");
+	public String sent(@RegisteredOAuth2AuthorizedClient("messaging") OAuth2AuthorizedClient messagingClient,
+						Map<String, Object> model) {
+		List<Message> messages = getMessages(messagingClient, this.messagesBaseUri + "/sent");
+		model.put(MESSAGES_ATTRIBUTE_NAME, messages);
+		model.put(MESSAGE_TYPE_ATTRIBUTE_NAME, MESSAGE_TYPE_SENT);
+		return "message-list";
 	}
 
 	private List<Message> getMessages(OAuth2AuthorizedClient messagingClient, String messagesUri) {
@@ -72,24 +91,47 @@ public class MessagingController {
 				.block();
 	}
 
-	@GetMapping("/{id}")
-	public Message get(@PathVariable Long id,
-						@RegisteredOAuth2AuthorizedClient("messaging") OAuth2AuthorizedClient messagingClient) {
+	@GetMapping("/compose")
+	public String compose(@RegisteredOAuth2AuthorizedClient("messaging") OAuth2AuthorizedClient messagingClient,
+						  Map<String, Object> model) {
+		List<User> users = getUsers(messagingClient);
+		model.put(USERS_ATTRIBUTE_NAME, users);
+		model.put(MESSAGE_ATTRIBUTE_NAME, new Message());
+		return "message-compose";
+	}
+
+	private List<User> getUsers(OAuth2AuthorizedClient messagingClient) {
+		ParameterizedTypeReference<List<User>> typeRef = new ParameterizedTypeReference<List<User>>() {};
 		return this.webClient
+				.get()
+				.uri(this.contactsBaseUri)
+				.attributes(oauth2AuthorizedClient(messagingClient))
+				.retrieve()
+				.bodyToMono(typeRef)
+				.block();
+	}
+
+	@GetMapping("/{id}")
+	public String get(@RegisteredOAuth2AuthorizedClient("messaging") OAuth2AuthorizedClient messagingClient,
+						Map<String, Object> model,
+						@PathVariable Long id) {
+		Message message = this.webClient
 				.get()
 				.uri(this.messagesBaseUri + "/" + id)
 				.attributes(oauth2AuthorizedClient(messagingClient))
 				.retrieve()
 				.bodyToMono(Message.class)
 				.block();
+		model.put(MESSAGE_ATTRIBUTE_NAME, message);
+		return "message-view";
 	}
 
 	@PostMapping
-	public Message save(@Valid @RequestBody Message message,
-						@AuthenticationPrincipal OidcUser oidcUser,
-						@RegisteredOAuth2AuthorizedClient("messaging") OAuth2AuthorizedClient messagingClient) {
+	public String save(@RegisteredOAuth2AuthorizedClient("messaging") OAuth2AuthorizedClient messagingClient,
+						@Valid Message message,
+						@AuthenticationPrincipal OidcUser oidcUser) {
 		message.setFromId(oidcUser.getClaimAsString("user_name"));
-		return this.webClient
+		message = this.webClient
 				.post()
 				.uri(this.messagesBaseUri)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -98,11 +140,13 @@ public class MessagingController {
 				.retrieve()
 				.bodyToMono(Message.class)
 				.block();
+		return "redirect:/messages/" + message.getId();
 	}
 
 	@DeleteMapping("/{id}")
-	public void delete(@PathVariable Long id,
-						@RegisteredOAuth2AuthorizedClient("messaging") OAuth2AuthorizedClient messagingClient) {
+	public String delete(@RegisteredOAuth2AuthorizedClient("messaging") OAuth2AuthorizedClient messagingClient,
+							@PathVariable Long id,
+							@RequestHeader("Referer") String referrer) {
 		this.webClient
 			.delete()
 			.uri(this.messagesBaseUri + "/" + id)
@@ -110,6 +154,10 @@ public class MessagingController {
 			.retrieve()
 			.bodyToMono(Void.class)
 			.block();
-		return;
+		String uri = "/messages/inbox";
+		if (!StringUtils.isEmpty(referrer)) {
+			uri = referrer;
+		}
+		return "redirect:" + uri;
 	}
 }

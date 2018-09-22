@@ -18,7 +18,6 @@ package sample.config;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 /**
  * @author Joe Grandja
@@ -30,16 +29,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-			.csrf()
-				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-				.and()
 			.authorizeRequests()
+				.antMatchers("/assets/**", "/webjars/**").permitAll()
 				.anyRequest().authenticated()
 				.and()
 			.oauth2Login()
 				.loginPage("/oauth2/authorization/messaging")
 				.failureUrl("/login?error")
 				.permitAll()
+				.and()
+			.logout()
+				.logoutSuccessUrl("http://localhost:8090/uaa/logout.do?client_id=messaging&redirect=http://localhost:8080")
 				.and()
 			.oauth2Client();
 	}

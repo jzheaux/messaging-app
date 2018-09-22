@@ -26,13 +26,13 @@ repositories {
 
 dependencies {
     compile "org.springframework.boot:spring-boot-starter-web",
+            "org.springframework.boot:spring-boot-starter-thymeleaf",
             "org.springframework.boot:spring-boot-starter-security",
             "org.springframework.security:spring-security-oauth2-client",
             "org.springframework.security:spring-security-oauth2-jose",
             "org.springframework:spring-webflux",
             "io.projectreactor.netty:reactor-netty",
-            "org.webjars:webjars-locator:0.32",
-            "org.webjars:angularjs:1.4.9",
-            "org.webjars:bootstrap:3.3.6",
-            "org.webjars:jquery:1.11.3"
+            "org.webjars:webjars-locator-core",
+            "org.webjars:bootstrap:3.3.7-1",
+            "org.webjars:jquery:3.1.1"
 }
