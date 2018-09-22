@@ -21,7 +21,7 @@ if (System.getenv("TOMCAT_HOME") == null) {
 }
 
 ext {
-    uaaVersion = '4.11.0'
+    uaaVersion = '4.20.0'
 }
 
 configurations {

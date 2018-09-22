@@ -1,6 +1,12 @@
 issuer:
   uri: http://localhost:8090/uaa
 
+encryption:
+  encryption_keys:
+  - label: uaa-encryption-key-1
+    passphrase: ((uaa_encryption_key_1))
+  active_key_label: uaa-encryption-key-1
+
 oauth:
   user:
     authorities:
