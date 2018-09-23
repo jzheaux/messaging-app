@@ -36,8 +36,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction.oauth2AuthorizedClient;
-
 /**
  * @author Joe Grandja
  */
@@ -85,7 +83,6 @@ public class MessagingController {
 		return this.webClient
 				.get()
 				.uri(messagesUri)
-				.attributes(oauth2AuthorizedClient(messagingClient))
 				.retrieve()
 				.bodyToMono(typeRef)
 				.block();
@@ -105,7 +102,6 @@ public class MessagingController {
 		return this.webClient
 				.get()
 				.uri(this.contactsBaseUri)
-				.attributes(oauth2AuthorizedClient(messagingClient))
 				.retrieve()
 				.bodyToMono(typeRef)
 				.block();
@@ -118,7 +114,6 @@ public class MessagingController {
 		Message message = this.webClient
 				.get()
 				.uri(this.messagesBaseUri + "/" + id)
-				.attributes(oauth2AuthorizedClient(messagingClient))
 				.retrieve()
 				.bodyToMono(Message.class)
 				.block();
@@ -136,7 +131,6 @@ public class MessagingController {
 				.uri(this.messagesBaseUri)
 				.contentType(MediaType.APPLICATION_JSON)
 				.syncBody(message)
-				.attributes(oauth2AuthorizedClient(messagingClient))
 				.retrieve()
 				.bodyToMono(Message.class)
 				.block();
@@ -150,7 +144,6 @@ public class MessagingController {
 		this.webClient
 			.delete()
 			.uri(this.messagesBaseUri + "/" + id)
-			.attributes(oauth2AuthorizedClient(messagingClient))
 			.retrieve()
 			.bodyToMono(Void.class)
 			.block();
