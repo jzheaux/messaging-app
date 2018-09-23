@@ -28,13 +28,12 @@ oauth:
     admin:
       secret: secret
       authorized-grant-types: client_credentials
-      scope: openid,profile
-      authorities: admin
+      authorities: contacts
     expired:
       secret: secret
       access-token-validity: 1
       authorized-grant-types: client_credentials
-      scope: openid,profile
+      scope: contacts
 
 scim:
   groups:

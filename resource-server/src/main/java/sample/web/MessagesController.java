@@ -15,20 +15,8 @@
  */
 package sample.web;
 
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.stream.Collectors;
-import javax.validation.Valid;
-
-import sample.data.Message;
-import sample.data.MessageRepository;
-import sample.data.UserProfile;
-import sample.data.UserProfileRepository;
-
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +25,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import sample.data.Message;
+import sample.data.MessageRepository;
+import sample.data.UserProfile;
+import sample.data.UserProfileRepository;
+
+import javax.validation.Valid;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * @author Joe Grandja
@@ -44,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/messages")
 public class MessagesController {
+	private static final String CONTACTS_AUTHORITY = "SCOPE_contacts";
 	private final MessageRepository messageRepository;
 	private final UserProfileRepository userProfileRepository;
 
@@ -56,29 +54,45 @@ public class MessagesController {
 
 	@GetMapping("/inbox")
 	public Iterable<Message> inbox(@AuthenticationPrincipal JwtAuthenticationToken token) {
-		if (!hasAuthority(token, "SCOPE_contacts")) {
-			return this.messageRepository.getInbox();
+		Collection<Message> messages = this.messageRepository.getInbox();
+		if (hasAuthority(token, CONTACTS_AUTHORITY)) {
+			return messages.stream()
+					.map(this::addUserInformation)
+					.collect(Collectors.toList());
 		}
-
-		return this.messageRepository.getInbox().stream()
-				.map(this::addUserInformation)
-				.collect(Collectors.toList());
+		return messages;
 	}
 
 	@GetMapping("/sent")
-	public Iterable<Message> sent() {
-		return this.messageRepository.getSent();
+	public Iterable<Message> sent(@AuthenticationPrincipal JwtAuthenticationToken token) {
+		Collection<Message> messages = this.messageRepository.getSent();
+		if (hasAuthority(token, CONTACTS_AUTHORITY)) {
+			return messages.stream()
+					.map(this::addUserInformation)
+					.collect(Collectors.toList());
+		}
+		return messages;
 	}
 
 	@GetMapping("/{id}")
-	public Message get(@PathVariable Long id) {
-		return this.messageRepository.findById(id).orElse(null);
+	public Message get(@AuthenticationPrincipal JwtAuthenticationToken token,
+						@PathVariable Long id) {
+		Message message = this.messageRepository.findById(id).orElse(null);
+		if (hasAuthority(token, CONTACTS_AUTHORITY)) {
+			return addUserInformation(message);
+		}
+		return message;
 	}
 
 	@PostMapping
-	public Message save(@Valid @RequestBody Message message) {
+	public Message save(@AuthenticationPrincipal JwtAuthenticationToken token,
+						@Valid @RequestBody Message message) {
 		message.setCreated(Calendar.getInstance());
-		return this.messageRepository.save(message);
+		message = this.messageRepository.save(message);
+		if (hasAuthority(token, CONTACTS_AUTHORITY)) {
+			return addUserInformation(message);
+		}
+		return message;
 	}
 
 	@DeleteMapping("/{id}")
@@ -96,8 +110,7 @@ public class MessagesController {
 	}
 
 	private boolean hasAuthority(Authentication authentication, String authority) {
-		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(authority);
-		return authorities.contains(grantedAuthority);
+		return authentication.getAuthorities().stream()
+				.anyMatch(a -> a.getAuthority().equals(authority));
 	}
 }
