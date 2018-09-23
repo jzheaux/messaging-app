@@ -44,8 +44,16 @@ public class DefaultControllerAdvice {
 
 	@ExceptionHandler(WebClientResponseException.class)
 	ModelAndView handleException(WebClientResponseException ex) {
-		String errorMessage = "An error occurred on the WebClient response -> [Status: " +
-				ex.getStatusCode() + "] " + ex.getStatusText();
+		return errorView("An error occurred on the WebClient response -> [Status: " +
+				ex.getStatusCode() + "] " + ex.getStatusText());
+	}
+
+	@ExceptionHandler(Exception.class)
+	ModelAndView handleException(Exception ex) {
+		return errorView("An error occurred: " + ex.getMessage());
+	}
+
+	private ModelAndView errorView(String errorMessage) {
 		Map<String, Object> model = new HashMap<>();
 		model.put("errorMessage", errorMessage);
 		return new ModelAndView("error", model);

@@ -140,7 +140,7 @@ public class MessagingController {
 				.retrieve()
 				.bodyToMono(Message.class)
 				.block();
-		return "redirect:/messages/" + message.getId();
+		return "redirect:/messages/sent";
 	}
 
 	@DeleteMapping("/{id}")
