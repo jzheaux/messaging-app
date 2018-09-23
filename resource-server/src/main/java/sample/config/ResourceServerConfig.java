@@ -29,6 +29,7 @@ import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoderJwkSupport;
 import sample.security.AudienceValidator;
 import sample.security.GrantedAuthoritiesExtractor;
+import sample.security.MoreInformativeAuthenticationEntryPoint;
 
 /**
  * @author Joe Grandja
@@ -49,6 +50,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 				.anyRequest().authenticated()
 				.and()
 			.oauth2ResourceServer()
+				.authenticationEntryPoint(new MoreInformativeAuthenticationEntryPoint())
 				.jwt()
 					.jwtAuthenticationConverter(new GrantedAuthoritiesExtractor())
 					.decoder(jwtDecoder());
