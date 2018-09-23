@@ -15,11 +15,11 @@
  */
 package sample.data;
 
-import java.util.Collection;
-
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+
+import java.util.Collection;
 
 /**
  * @author Joe Grandja
@@ -31,6 +31,7 @@ public interface UserProfileRepository extends CrudRepository<UserProfile, Long>
 	UserProfile findByUserId(@Param("userId") String userId);
 
 	@Query("select distinct u from UserProfile u, UserContact c " +
-			"where u.userId = c.contactUserId")
+			"where u.userId = c.contactUserId and " +
+			"c.ownerUserId = ?#{principal.claims['user_name']}")
 	Collection<UserProfile> findByUserContacts();
 }
