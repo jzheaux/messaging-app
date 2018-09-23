@@ -15,13 +15,16 @@
  */
 package sample.web;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Joe Grandja
@@ -40,9 +43,11 @@ public class DefaultControllerAdvice {
 	}
 
 	@ExceptionHandler(WebClientResponseException.class)
-	ResponseEntity<String> handleException(WebClientResponseException ex) {
+	ModelAndView handleException(WebClientResponseException ex) {
 		String errorMessage = "An error occurred on the WebClient response -> [Status: " +
 				ex.getStatusCode() + "] " + ex.getStatusText();
-		return new ResponseEntity<>(errorMessage, ex.getStatusCode());
+		Map<String, Object> model = new HashMap<>();
+		model.put("errorMessage", errorMessage);
+		return new ModelAndView("error", model);
 	}
 }

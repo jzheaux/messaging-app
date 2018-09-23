@@ -15,13 +15,13 @@
  */
 package sample.web;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
+
+import java.util.Map;
 
 /**
  * @author Joe Grandja
@@ -35,8 +35,10 @@ public class DefaultController {
 	}
 
 	@GetMapping(path = "/login", params = "error")
-	public ResponseEntity<String> loginError(@SessionAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) AuthenticationException authEx) {
-		String errorMsg = authEx != null ? authEx.getMessage() : "[unknown error]";
-		return new ResponseEntity<>(errorMsg, HttpStatus.UNAUTHORIZED);
+	public String loginError(@SessionAttribute(WebAttributes.AUTHENTICATION_EXCEPTION) AuthenticationException authEx,
+												Map<String, Object> model) {
+		String errorMessage = authEx != null ? authEx.getMessage() : "[unknown error]";
+		model.put("errorMessage", errorMessage);
+		return "error";
 	}
 }
