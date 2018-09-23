@@ -16,11 +16,21 @@
 package sample.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
+import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+import sample.web.CustomAccessTokenResponseConverter;
 import sample.web.CustomAuthorizationRequestResolver;
+
+import java.util.Arrays;
 
 /**
  * @author Joe Grandja
@@ -47,6 +57,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					.authorizationRequestResolver(
 							new CustomAuthorizationRequestResolver((this.clientRegistrationRepository)))
 					.and()
+				.tokenEndpoint()
+					.accessTokenResponseClient(authorizationCodeTokenResponseClient())
+					.and()
 				.and()
 			.logout()
 				.logoutSuccessUrl("http://localhost:8090/uaa/logout.do?client_id=messaging&redirect=http://localhost:8080")
@@ -54,4 +67,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.oauth2Client();
 	}
 	// @formatter:on
+
+	private OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> authorizationCodeTokenResponseClient() {
+		OAuth2AccessTokenResponseHttpMessageConverter tokenResponseHttpMessageConverter =
+				new OAuth2AccessTokenResponseHttpMessageConverter();
+		tokenResponseHttpMessageConverter.setTokenResponseConverter(new CustomAccessTokenResponseConverter());
+
+		RestTemplate restTemplate = new RestTemplate(Arrays.asList(
+				new FormHttpMessageConverter(), tokenResponseHttpMessageConverter));
+		restTemplate.setErrorHandler(new OAuth2ErrorResponseErrorHandler());
+
+		DefaultAuthorizationCodeTokenResponseClient tokenResponseClient = new DefaultAuthorizationCodeTokenResponseClient();
+		tokenResponseClient.setRestOperations(restTemplate);
+
+		return tokenResponseClient;
+	}
 }
