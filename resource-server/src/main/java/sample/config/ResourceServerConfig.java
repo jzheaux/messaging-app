@@ -15,9 +15,19 @@
  */
 package sample.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtDecoders;
+import org.springframework.security.oauth2.jwt.JwtValidators;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoderJwkSupport;
+import sample.security.AudienceValidator;
 import sample.security.GrantedAuthoritiesExtractor;
 
 /**
@@ -25,6 +35,9 @@ import sample.security.GrantedAuthoritiesExtractor;
  */
 @EnableWebSecurity
 public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
+
+	@Autowired
+	private OAuth2ResourceServerProperties resourceServerProperties;
 
 	// @formatter:off
 	@Override
@@ -37,7 +50,22 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
 				.and()
 			.oauth2ResourceServer()
 				.jwt()
-					.jwtAuthenticationConverter(new GrantedAuthoritiesExtractor());
+					.jwtAuthenticationConverter(new GrantedAuthoritiesExtractor())
+					.decoder(jwtDecoder());
 	}
 	// @formatter:on
+
+	private JwtDecoder jwtDecoder() {
+		String issuerUri = this.resourceServerProperties.getJwt().getIssuerUri();
+
+		NimbusJwtDecoderJwkSupport jwtDecoder =
+				(NimbusJwtDecoderJwkSupport) JwtDecoders.fromOidcIssuerLocation(issuerUri);
+
+		OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuerUri);
+		OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(
+				withIssuer, new AudienceValidator());
+		jwtDecoder.setJwtValidator(withAudience);
+
+		return jwtDecoder;
+	}
 }
