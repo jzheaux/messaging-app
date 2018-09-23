@@ -27,7 +27,7 @@ spring:
             client-secret: secret
             authorization-grant-type: authorization_code
             redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
-            scope: openid,profile,email,messages,contacts
+            scope: openid,profile,email,messages
           admin:
             provider: uaa
             client-id: admin

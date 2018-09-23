@@ -15,15 +15,21 @@
  */
 package sample.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import sample.web.CustomAuthorizationRequestResolver;
 
 /**
  * @author Joe Grandja
  */
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+	@Autowired
+	private ClientRegistrationRepository clientRegistrationRepository;
 
 	// @formatter:off
 	@Override
@@ -37,6 +43,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.loginPage("/oauth2/authorization/messaging")
 				.failureUrl("/login?error")
 				.permitAll()
+				.authorizationEndpoint()
+					.authorizationRequestResolver(
+							new CustomAuthorizationRequestResolver((this.clientRegistrationRepository)))
+					.and()
 				.and()
 			.logout()
 				.logoutSuccessUrl("http://localhost:8090/uaa/logout.do?client_id=messaging&redirect=http://localhost:8080")
