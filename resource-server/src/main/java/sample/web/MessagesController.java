@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/messages")
 public class MessagesController {
-	private static final String CONTACTS_AUTHORITY = "SCOPE_contacts";
+	private static final String CONTACTS_AUTHORITY = "contacts";
 	private final MessageRepository messageRepository;
 	private final UserProfileRepository userProfileRepository;
 
